@@ -31,19 +31,19 @@ class CobaltCluster(JobQueueCluster):
 		# Cobalt header build
 		if queue is not None:
 			header_lines.append("#COBALT -q %s" % queue)
-			self.submit_command += " -q %s" % queue)
+			self.submit_command += " -q %s" % queue
 		if project is not None:
 			header_lines.append("#COBALT -A %s" % project)
 		if walltime is not None:
 			header_lines.append("#COBALT -t %s" % walltime)
-			self.submit_command += " -t %s" % walltime)
+			self.submit_command += " -t %s" % walltime
 		if ncpus is None:
 			# Compute default cores specifications
 			ncpus = self.worker_cores
 			logger.info("ncpus specification for COBALT not set, initializing it to %s" % ncpus)
 		if ncpus is not None:
 			header_lines.append("#COBALT -n %s" % ncpus)
-			self.submit_command += " -n %s" % ncpus)
+			self.submit_command += " -n %s" % ncpus
 		if self.log_directory is not None:
 			header_lines.append("#COBALT -o %s/" % self.log_directory)
 		header_lines.extend(["#COBALT %s" % arg for arg in job_extra])
