@@ -236,8 +236,6 @@ class JobQueueCluster(ClusterManager):
                 "You must specify how much memory to use per job like ``memory='24 GB'``"
             )
 
-        self.need_chmod_exec = dask.config.get("jobqueue.%s.need_exec" % config_name)
-
         # This attribute should be overridden
         self.job_header = None
 
