@@ -59,20 +59,20 @@ class CobaltCluster(JobQueueCluster):
 
 		logger.debug("Job script: \n %s" % self.job_script())
 		
-    def _call(self, cmd, **kwargs):
-        cmd_str = " ".join(cmd)
-        logger.debug(
-            "Executing the following command to command line\n{}".format(cmd_str)
-        )
+	def _call(self, cmd, **kwargs):
+		cmd_str = " ".join(cmd)
+		logger.debug(
+			"Executing the following command to command line\n{}".format(cmd_str)
+		)
 
-        proc = subprocess.Popen(
-            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kwargs
-        )
+		proc = subprocess.Popen(
+			cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kwargs
+		)
 
-        out, err = proc.communicate()
-        if six.PY3:
-            out, err = out.decode(), err.decode()
-        if proc.returncode != 0:
+		out, err = proc.communicate()
+		if six.PY3:
+			out, err = out.decode(), err.decode()
+		if proc.returncode != 0:
 			if proc.returncode != 1:
 				raise RuntimeError(
 					"Command exited with non-zero exit code.\n"
@@ -90,4 +90,4 @@ class CobaltCluster(JobQueueCluster):
 						"stdout:\n{}\n"
 						"stderr:\n{}\n".format(proc.returncode, cmd_str, out, err)
 					)					
-        return out		
+		return out		
