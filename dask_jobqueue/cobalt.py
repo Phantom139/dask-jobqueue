@@ -74,7 +74,7 @@ class CobaltCluster(JobQueueCluster):
 		)
 
 		out, err = proc.communicate()
-		logger.debug("_call(): Returns:\n
+		logger.debug("_call(): Returns:\n"
 		"stdout:\n{}\n"
 		"stderr:\n{}\n".format(out, err))
 		if six.PY3:
