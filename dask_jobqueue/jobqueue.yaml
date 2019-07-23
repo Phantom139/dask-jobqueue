@@ -21,7 +21,6 @@ jobqueue:
     resource-spec: null
     job-extra: []
     log-directory: null
-    need_exec: False             # Do we need to chmod +x the job file?
 
   pbs:
     name: dask-worker
@@ -45,7 +44,6 @@ jobqueue:
     resource-spec: null
     job-extra: []
     log-directory: null
-    need_exec: False             # Do we need to chmod +x the job file?
 
   sge:
     name: dask-worker
@@ -68,7 +66,6 @@ jobqueue:
     env-extra: []
     job-extra: []
     log-directory: null
-    need_exec: False             # Do we need to chmod +x the job file?
     resource-spec: null
 
   slurm:
@@ -94,7 +91,6 @@ jobqueue:
     job-mem: null
     job-extra: []
     log-directory: null
-    need_exec: False             # Do we need to chmod +x the job file?
 
   moab:
     name: dask-worker
@@ -118,7 +114,6 @@ jobqueue:
     resource-spec: null
     job-extra: []
     log-directory: null
-    need_exec: False             # Do we need to chmod +x the job file?
 
 
   lsf:
@@ -145,7 +140,6 @@ jobqueue:
     job-extra: []
     log-directory: null
     lsf-units: null
-    need_exec: False             # Do we need to chmod +x the job file?
 
   htcondor:
     name: dask-worker
@@ -165,7 +159,7 @@ jobqueue:
     env-extra: []
     job-extra: {}               # Extra submit attributes
     log-directory: null
-    need_exec: False             # Do we need to chmod +x the job file?
+
     shebang: "#!/usr/bin/env condor_submit"
 
   cobalt:
@@ -186,5 +180,5 @@ jobqueue:
     env-extra: []
     job-extra: {}               # Extra submit attributes
     log-directory: null
-    need_exec: True             # Do we need to chmod +x the job file?
+
     shebang: "#!/bin/bash"

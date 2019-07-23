@@ -4,6 +4,7 @@ import logging
 import shlex
 import subprocess
 import sys
+import re
 
 import six
 
@@ -59,6 +60,8 @@ class CobaltCluster(JobQueueCluster):
 
 		logger.debug("Job script: \n %s" % self.job_script())
 		
+	# RF: For some silly reason, Argonne's COBALT system passes job submission through stderr which causes a return code of 1 on job submit success.
+	#  This override should allow for that to proceed and only raise RuntimeError if "error" is found in stderr
 	def _call(self, cmd, **kwargs):
 		cmd_str = " ".join(cmd)
 		logger.debug(
@@ -90,4 +93,20 @@ class CobaltCluster(JobQueueCluster):
 						"stdout:\n{}\n"
 						"stderr:\n{}\n".format(proc.returncode, cmd_str, out, err)
 					)					
-		return out		
+		return out, err	
+
+	def start_workers(self, n=1):
+		""" Start workers and point them to our local scheduler """
+		logger.debug("starting %s workers", n)
+		num_jobs = int(math.ceil(n / self.worker_processes))
+		for _ in range(num_jobs):
+			with self.job_file() as fn:
+				#RF: Testing on Theta shows the script file must be executable.
+				self._call(shlex.split("chmod +x") + [fn])
+				#RF: Cobalt output is going through stderr
+				out, err = self._submit_job(fn)
+				job = self._job_id_from_submit_output(err)
+				if not job:
+					raise ValueError("Unable to parse jobid from output of %s" % err)
+				logger.debug("started job: %s", job)
+				self.pending_jobs[job] = {}		
