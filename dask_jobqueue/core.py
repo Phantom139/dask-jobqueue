@@ -374,19 +374,19 @@ class JobQueueCluster(ClusterManager):
         return self._call(shlex.split(self.submit_command) + [script_filename])
 
     def start_workers(self, n=1):
-		""" Start workers and point them to our local scheduler """
-		logger.debug("starting %s workers", n)
-		num_jobs = int(math.ceil(n / self.worker_processes))
-		for _ in range(num_jobs):
-			with self.job_file() as fn:
+        """ Start workers and point them to our local scheduler """
+        logger.debug("starting %s workers", n)
+        num_jobs = int(math.ceil(n / self.worker_processes))
+        for _ in range(num_jobs):
+            with self.job_file() as fn:
                 if(self.need_chmod_exec):
-					self._call(shlex.split("chmod +x") + [fn])
-				out = self._submit_job(fn)
-				job = self._job_id_from_submit_output(out)
-				if not job:
-					raise ValueError("Unable to parse jobid from output of %s" % out)
-				logger.debug("started job: %s", job)
-				self.pending_jobs[job] = {}
+                    self._call(shlex.split("chmod +x") + [fn])
+                out = self._submit_job(fn)
+                job = self._job_id_from_submit_output(out)
+                if not job:
+	                raise ValueError("Unable to parse jobid from output of %s" % out)
+                logger.debug("started job: %s", job)
+                self.pending_jobs[job] = {}
 
     @property
     def scheduler(self):
