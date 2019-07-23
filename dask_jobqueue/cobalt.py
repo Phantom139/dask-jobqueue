@@ -108,7 +108,6 @@ class CobaltCluster(JobQueueCluster):
 				#RF: Testing on Theta shows the script file must be executable.
 				self._call(shlex.split("chmod +x") + [fn])
 				out = self._submit_job(fn)
-				logger.debug("Worker job submitted, output:\n{}".format(out))
 				job = self._job_id_from_submit_output(out)
 				if not job:
 					raise ValueError("Unable to parse jobid from output of %s" % out)
