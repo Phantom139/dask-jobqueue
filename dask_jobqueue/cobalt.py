@@ -19,7 +19,7 @@ class CobaltCluster(JobQueueCluster):
 	submit_command = "qsub --mode script"
 	cancel_command = "qdel"
 
-	def __init__(self, queue=None, project=None, walltime=None, ncpus=None, job_extra=None, config_name="cobalt", **kwargs):
+	def __init__(self, queue=None, project=None, walltime=None, ncpus=None, job_extra=None, log_directory=None, config_name="cobalt", **kwargs):
 		if queue is None:
 			queue = dask.config.get("jobqueue.%s.queue" % config_name)
 		if project is None:
@@ -52,8 +52,11 @@ class CobaltCluster(JobQueueCluster):
 		if ncpus is not None:
 			header_lines.append("#COBALT -n %s" % ncpus)
 			self.submit_command += " -n %s" % ncpus
-		if self.log_directory is not None:
-			header_lines.append("#COBALT -o %s/" % self.log_directory)
+		if log_directory is not None:
+			header_lines.append("#COBALT -o %s/" % log_directory)
+			self.submit_command += " -o %s/" % log_directory
+			header_lines.append("#COBALT -e %s/" % log_directory)
+			self.submit_command += " -e %s/" % log_directory
 		header_lines.extend(["#COBALT %s" % arg for arg in job_extra])
 
 		# Declare class attribute that shall be overridden
