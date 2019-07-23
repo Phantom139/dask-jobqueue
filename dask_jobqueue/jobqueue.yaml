@@ -21,6 +21,7 @@ jobqueue:
     resource-spec: null
     job-extra: []
     log-directory: null
+    need_exec: False             # Do we need to chmod +x the job file?
 
   pbs:
     name: dask-worker
@@ -44,6 +45,7 @@ jobqueue:
     resource-spec: null
     job-extra: []
     log-directory: null
+    need_exec: False             # Do we need to chmod +x the job file?
 
   sge:
     name: dask-worker
@@ -66,7 +68,7 @@ jobqueue:
     env-extra: []
     job-extra: []
     log-directory: null
-
+    need_exec: False             # Do we need to chmod +x the job file?
     resource-spec: null
 
   slurm:
@@ -92,6 +94,7 @@ jobqueue:
     job-mem: null
     job-extra: []
     log-directory: null
+    need_exec: False             # Do we need to chmod +x the job file?
 
   moab:
     name: dask-worker
@@ -115,6 +118,8 @@ jobqueue:
     resource-spec: null
     job-extra: []
     log-directory: null
+    need_exec: False             # Do we need to chmod +x the job file?
+
 
   lsf:
     name: dask-worker
@@ -140,6 +145,7 @@ jobqueue:
     job-extra: []
     log-directory: null
     lsf-units: null
+    need_exec: False             # Do we need to chmod +x the job file?
 
   htcondor:
     name: dask-worker
@@ -159,6 +165,7 @@ jobqueue:
     env-extra: []
     job-extra: {}               # Extra submit attributes
     log-directory: null
+    need_exec: False             # Do we need to chmod +x the job file?
     shebang: "#!/usr/bin/env condor_submit"
 
   cobalt:
@@ -173,10 +180,11 @@ jobqueue:
     death-timeout: 60           # Number of seconds to wait if a worker can not find a scheduler
     local-directory: null       # Location of fast local storage like /scratch or $TMPDIR
 
-    # HTCondor Resource Manager options
+    # Additional COBALT options
     disk: null                  # Total amount of disk per job
     extra: []
     env-extra: []
     job-extra: {}               # Extra submit attributes
     log-directory: null
+    need_exec: True             # Do we need to chmod +x the job file?
     shebang: "#!/usr/bin/env bash"

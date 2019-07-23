@@ -236,6 +236,8 @@ class JobQueueCluster(ClusterManager):
                 "You must specify how much memory to use per job like ``memory='24 GB'``"
             )
 
+        self.need_chmod_exec = dask.config.get("jobqueue.%s.need_exec" % config_name)
+
         # This attribute should be overridden
         self.job_header = None
 
@@ -377,6 +379,8 @@ class JobQueueCluster(ClusterManager):
         num_jobs = int(math.ceil(n / self.worker_processes))
         for _ in range(num_jobs):
             with self.job_file() as fn:
+                if(self.need_chmod_exec):
+                   self._call("chmod +x " + fn)
                 out = self._submit_job(fn)
                 job = self._job_id_from_submit_output(out)
                 if not job:
