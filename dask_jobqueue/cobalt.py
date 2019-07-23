@@ -97,7 +97,7 @@ class CobaltCluster(JobQueueCluster):
 						"stdout:\n{}\n"
 						"stderr:\n{}\n".format(proc.returncode, cmd_str, out, err)
 					)					
-		return out, err	
+		return out	
 
 	def start_workers(self, n=1):
 		""" Start workers and point them to our local scheduler """
@@ -107,10 +107,10 @@ class CobaltCluster(JobQueueCluster):
 			with self.job_file() as fn:
 				#RF: Testing on Theta shows the script file must be executable.
 				self._call(shlex.split("chmod +x") + [fn])
-				#RF: Cobalt output is going through stderr
-				out, err = self._submit_job(fn)
-				job = self._job_id_from_submit_output(err)
+				out = self._submit_job(fn)
+				logger.debug("Worker job submitted, output:\n{}".format(out))
+				job = self._job_id_from_submit_output(out)
 				if not job:
-					raise ValueError("Unable to parse jobid from output of %s" % err)
+					raise ValueError("Unable to parse jobid from output of %s" % out)
 				logger.debug("started job: %s", job)
 				self.pending_jobs[job] = {}		
