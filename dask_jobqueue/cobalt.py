@@ -34,6 +34,7 @@ class CobaltCluster(JobQueueCluster):
 			self.submit_command += " -q %s" % queue
 		if project is not None:
 			header_lines.append("#COBALT -A %s" % project)
+			self.submit_command += " -A %s" % project
 		if walltime is not None:
 			header_lines.append("#COBALT -t %s" % walltime)
 			self.submit_command += " -t %s" % walltime

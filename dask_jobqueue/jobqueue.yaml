@@ -187,4 +187,4 @@ jobqueue:
     job-extra: {}               # Extra submit attributes
     log-directory: null
     need_exec: True             # Do we need to chmod +x the job file?
-    shebang: "#!/usr/bin/env bash"
+    shebang: "#!/bin/bash"
