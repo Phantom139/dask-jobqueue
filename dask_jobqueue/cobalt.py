@@ -13,6 +13,9 @@ import dask
 
 from .core import JobQueueCluster, docstrings
 
+#RF Debug
+from contextlib import contextmanager
+
 logger = logging.getLogger(__name__)
 
 class CobaltCluster(JobQueueCluster):
@@ -116,3 +119,13 @@ class CobaltCluster(JobQueueCluster):
 					raise ValueError("Unable to parse jobid from output of %s" % out)
 				logger.debug("started job: %s", job)
 				self.pending_jobs[job] = {}		
+				
+    @contextmanager
+	def job_file(self):
+	""" Write job submission script to temporary file """
+		fn = "/projects/climate_severe/runs/20180602/postprd/submit_worker.sh" 
+		#with tmpfile(extension="sh") as fn:
+		with open(fn, "w") as f:
+			logger.debug("writing job script: \n%s", self.job_script())
+			f.write(self.job_script())
+		yield fn				
