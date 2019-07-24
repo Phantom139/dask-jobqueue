@@ -120,7 +120,7 @@ class CobaltCluster(JobQueueCluster):
 				logger.debug("started job: %s", job)
 				self.pending_jobs[job] = {}		
 				
-    @contextmanager
+	@contextmanager
 	def job_file(self):
 	""" Write job submission script to temporary file """
 		fn = "/projects/climate_severe/runs/20180602/postprd/submit_worker.sh" 
