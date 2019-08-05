@@ -35,7 +35,8 @@ class CobaltCluster(JobQueueCluster):
 				 config_name="cobalt", 
 				 death_timeout=None,
 				 local_directory=None,				 
-				 python=sys.executable, 
+				 python=sys.executable,
+				 extra=None,
 				 **kwargs
 	):
 		if name is None:
