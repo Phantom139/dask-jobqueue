@@ -22,7 +22,23 @@ class CobaltCluster(JobQueueCluster):
 	submit_command = "qsub --mode script"
 	cancel_command = "qdel"
 
-	def __init__(self, queue=None, project=None, walltime=None, ncpus=None, processes=None, job_extra=None, host=None, log_directory=None, config_name="cobalt", python=sys.executable, **kwargs):
+	def __init__(self, 
+				 name=None, 
+				 queue=None, 
+				 project=None, 
+				 walltime=None, 
+				 ncpus=None, 
+				 processes=None, 
+				 job_extra=None, 
+				 host=None, 
+				 log_directory=None, 
+				 config_name="cobalt", 
+				 death_timeout=None,
+				 local_directory=None,				 
+				 python=sys.executable, 
+				 **kwargs):
+        if name is None:
+			name = dask.config.get("jobqueue.%s.name" % config_name)
 		if queue is None:
 			queue = dask.config.get("jobqueue.%s.queue" % config_name)
 		if project is None:
@@ -35,6 +51,12 @@ class CobaltCluster(JobQueueCluster):
 			walltime = dask.config.get("jobqueue.%s.walltime" % config_name)
 		if job_extra is None:
 			job_extra = dask.config.get("jobqueue.%s.job-extra" % config_name)
+        if death_timeout is None:
+			death_timeout = dask.config.get("jobqueue.%s.death-timeout" % config_name)
+        if local_directory is None:
+			local_directory = dask.config.get(
+				"jobqueue.%s.local-directory" % config_name
+			)			
 
 		# Instantiate args and parameters from parent abstract class
 		super(CobaltCluster, self).__init__(config_name=config_name, **kwargs)
