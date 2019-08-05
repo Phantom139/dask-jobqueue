@@ -22,7 +22,7 @@ class CobaltCluster(JobQueueCluster):
 	submit_command = "qsub --mode script"
 	cancel_command = "qdel"
 
-	def __init__(self, queue=None, project=None, walltime=None, ncpus=None, job_extra=None, log_directory=None, config_name="cobalt", **kwargs):
+	def __init__(self, queue=None, project=None, walltime=None, ncpus=None, job_extra=None, host=None, log_directory=None, config_name="cobalt", **kwargs):
 		if queue is None:
 			queue = dask.config.get("jobqueue.%s.queue" % config_name)
 		if project is None:
@@ -64,6 +64,31 @@ class CobaltCluster(JobQueueCluster):
 
 		# Declare class attribute that shall be overridden
 		self.job_header = "\n".join(header_lines)
+		
+		#
+        # dask-worker command line build
+        dask_worker_command = "%(python)s -m distributed.cli.dask_worker" % dict(
+            python=python
+        )
+		if host is not None:
+			command_args = [dask_worker_command, host]
+		else:
+			command_args = [dask_worker_command, self.scheduler.address]
+        command_args += ["--nthreads", self.worker_process_threads]
+        if processes is not None and processes > 1:
+            command_args += ["--nprocs", processes]
+
+        command_args += ["--memory-limit", self.worker_process_memory]
+        command_args += ["--name", "%s--${JOB_ID}--" % name]
+
+        if death_timeout is not None:
+            command_args += ["--death-timeout", death_timeout]
+        if local_directory is not None:
+            command_args += ["--local-directory", local_directory]
+        if extra is not None:
+            command_args += extra
+
+        self._command_template = " ".join(map(str, command_args))		
 
 		logger.debug("Job script: \n %s" % self.job_script())
 		
