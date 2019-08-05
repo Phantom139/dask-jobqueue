@@ -66,29 +66,27 @@ class CobaltCluster(JobQueueCluster):
 		self.job_header = "\n".join(header_lines)
 		
 		#
-        # dask-worker command line build
-        dask_worker_command = "%(python)s -m distributed.cli.dask_worker" % dict(
-            python=python
-        )
+		# dask-worker command line build
+		dask_worker_command = "%(python)s -m distributed.cli.dask_worker" % dict(python=python)
 		if host is not None:
 			command_args = [dask_worker_command, host]
 		else:
 			command_args = [dask_worker_command, self.scheduler.address]
-        command_args += ["--nthreads", self.worker_process_threads]
-        if processes is not None and processes > 1:
-            command_args += ["--nprocs", processes]
+		command_args += ["--nthreads", self.worker_process_threads]
+		if processes is not None and processes > 1:
+			command_args += ["--nprocs", processes]
 
-        command_args += ["--memory-limit", self.worker_process_memory]
-        command_args += ["--name", "%s--${JOB_ID}--" % name]
+		command_args += ["--memory-limit", self.worker_process_memory]
+		command_args += ["--name", "%s--${JOB_ID}--" % name]
 
-        if death_timeout is not None:
-            command_args += ["--death-timeout", death_timeout]
-        if local_directory is not None:
-            command_args += ["--local-directory", local_directory]
-        if extra is not None:
-            command_args += extra
+		if death_timeout is not None:
+			command_args += ["--death-timeout", death_timeout]
+		if local_directory is not None:
+			command_args += ["--local-directory", local_directory]
+		if extra is not None:
+			command_args += extra
 
-        self._command_template = " ".join(map(str, command_args))		
+		self._command_template = " ".join(map(str, command_args))		
 
 		logger.debug("Job script: \n %s" % self.job_script())
 		
