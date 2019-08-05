@@ -38,7 +38,7 @@ class CobaltCluster(JobQueueCluster):
 				 python=sys.executable, 
 				 **kwargs
 	):
-        if name is None:
+		if name is None:
 			name = dask.config.get("jobqueue.%s.name" % config_name)
 		if queue is None:
 			queue = dask.config.get("jobqueue.%s.queue" % config_name)
@@ -52,9 +52,9 @@ class CobaltCluster(JobQueueCluster):
 			walltime = dask.config.get("jobqueue.%s.walltime" % config_name)
 		if job_extra is None:
 			job_extra = dask.config.get("jobqueue.%s.job-extra" % config_name)
-        if death_timeout is None:
+		if death_timeout is None:
 			death_timeout = dask.config.get("jobqueue.%s.death-timeout" % config_name)
-        if local_directory is None:
+		if local_directory is None:
 			local_directory = dask.config.get(
 				"jobqueue.%s.local-directory" % config_name
 			)			
