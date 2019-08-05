@@ -22,11 +22,13 @@ class CobaltCluster(JobQueueCluster):
 	submit_command = "qsub --mode script"
 	cancel_command = "qdel"
 
-	def __init__(self, queue=None, project=None, walltime=None, ncpus=None, job_extra=None, host=None, log_directory=None, config_name="cobalt", python=sys.executable, **kwargs):
+	def __init__(self, queue=None, project=None, walltime=None, ncpus=None, processes=None, job_extra=None, host=None, log_directory=None, config_name="cobalt", python=sys.executable, **kwargs):
 		if queue is None:
 			queue = dask.config.get("jobqueue.%s.queue" % config_name)
 		if project is None:
-			project = dask.config.get("jobqueue.%s.project" % config_name)			
+			project = dask.config.get("jobqueue.%s.project" % config_name)
+		if processes is None:
+			processes = dask.config.get("jobqueue.%s.processes" % config_name)			
 		if ncpus is None:
 			ncpus = dask.config.get("jobqueue.%s.ncpus" % config_name)
 		if walltime is None:
