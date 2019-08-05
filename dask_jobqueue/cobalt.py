@@ -36,7 +36,8 @@ class CobaltCluster(JobQueueCluster):
 				 death_timeout=None,
 				 local_directory=None,				 
 				 python=sys.executable, 
-				 **kwargs):
+				 **kwargs
+	):
         if name is None:
 			name = dask.config.get("jobqueue.%s.name" % config_name)
 		if queue is None:
