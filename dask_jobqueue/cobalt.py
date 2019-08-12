@@ -21,6 +21,15 @@ logger = logging.getLogger(__name__)
 class CobaltCluster(JobQueueCluster):
 	submit_command = "qsub --mode script"
 	cancel_command = "qdel"
+	
+    _script_template = """
+%(shebang)s
+%(job_header)s
+
+%(env_header)s
+
+%(worker_command)s
+""".lstrip()	
 
 	def __init__(self, 
 				 name=None, 
@@ -129,9 +138,9 @@ class CobaltCluster(JobQueueCluster):
 		)
 
 		out, err = proc.communicate()
-		logger.debug("_call(): Returns:\n"
+		logger.debug("_call(): Returns: {}\n"
 		"stdout:\n{}\n"
-		"stderr:\n{}\n".format(out, err))
+		"stderr:\n{}\n".format(proc.returncode, out, err))
 		if six.PY3:
 			out, err = out.decode(), err.decode()
 		if proc.returncode != 0:
@@ -167,12 +176,4 @@ class CobaltCluster(JobQueueCluster):
 				if not job:
 					raise ValueError("Unable to parse jobid from output of %s" % out)
 				logger.debug("started job: %s", job)
-				self.pending_jobs[job] = {}		
-				
-	@contextmanager
-	def job_file(self):
-		fn = "/projects/climate_severe/runs/20180602/postprd/submit_worker.sh" 
-		with open(fn, "w") as f:
-			logger.debug("writing job script: \n%s", self.job_script())
-			f.write(self.job_script())
-		yield fn				
+				self.pending_jobs[job] = {}						
