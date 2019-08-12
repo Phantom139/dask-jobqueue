@@ -97,6 +97,8 @@ class CobaltCluster(JobQueueCluster):
 			self.submit_command += " -e %s/" % log_directory
 		header_lines.extend(["#COBALT %s" % arg for arg in job_extra])
 
+		header_lines.append("JOB_ID=${COBALT_JOBID}")
+		
 		# Declare class attribute that shall be overridden
 		self.job_header = "\n".join(header_lines)
 		
