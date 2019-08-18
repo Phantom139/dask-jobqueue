@@ -6,6 +6,7 @@ import shlex
 import subprocess
 import sys
 import re
+import os
 
 import six
 
@@ -126,44 +127,19 @@ class CobaltCluster(JobQueueCluster):
 		self._command_template = " ".join(map(str, command_args))		
 
 		logger.debug("Job script: \n %s" % self.job_script())
-		
-	# RF: For some silly reason, Argonne's COBALT system passes job submission through stderr which causes a return code of 1 on job submit success.
-	#  This override should allow for that to proceed and only raise RuntimeError if "error" is found in stderr
-	def _call(self, cmd, **kwargs):
-		cmd_str = " ".join(cmd)
-		logger.debug(
-			"Executing the following command to command line\n{}".format(cmd_str)
-		)
 
-		proc = subprocess.Popen(
-			cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kwargs
-		)
-
-		out, err = proc.communicate()
-		logger.debug("_call(): Returns: {}\n"
-		"stdout:\n{}\n"
-		"stderr:\n{}\n".format(proc.returncode, out, err))
-		if six.PY3:
-			out, err = out.decode(), err.decode()
-		if proc.returncode != 0:
-			if proc.returncode != 1:
-				raise RuntimeError(
-					"Command exited with non-zero exit code.\n"
-					"Exit code: {}\n"
-					"Command:\n{}\n"
-					"stdout:\n{}\n"
-					"stderr:\n{}\n".format(proc.returncode, cmd_str, out, err)
-				)
-			else:
-				if(err.find("error") != -1):
-					raise RuntimeError(
-						"Command exited with non-zero exit code (error).\n"
-						"Exit code: {}\n"
-						"Command:\n{}\n"
-						"stdout:\n{}\n"
-						"stderr:\n{}\n".format(proc.returncode, cmd_str, out, err)
-					)					
-		return out	
+	@contextmanager
+	def job_file(self):
+		""" Write job submission script to temporary file """
+		#RF: For Theta, we can't use temp. files, so give it one in the running directory
+		#with tmpfile(extension="sh") as fn:
+		cDir = os.path.dirname(__file__)
+		fn = cDir + 'dask-jobqueue-worker-job.sh'
+		print("WRITE TO " + str(fn))
+		with open(fn, "w") as f:
+			logger.debug("writing job script: \n%s", self.job_script())
+			f.write(self.job_script())
+		yield fn		
 
 	def start_workers(self, n=1):
 		""" Start workers and point them to our local scheduler """
