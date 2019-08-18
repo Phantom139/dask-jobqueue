@@ -22,7 +22,7 @@ class CobaltCluster(JobQueueCluster):
 	submit_command = "qsub --mode script"
 	cancel_command = "qdel"
 	
-    _script_template = """
+	_script_template = """
 %(shebang)s
 %(job_header)s
 
